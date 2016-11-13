@@ -1,11 +1,4 @@
-# an array of 3 items, two FALSE and one TRUE
-doors <- function() {
-  return(sample(c(TRUE, FALSE, FALSE), 3))
-}
 
-choose <- function() {
-  sample(doors(), 1)
-}
 
 run_games <- function(n) {
   df <- data.frame(
@@ -39,4 +32,28 @@ do_score <- function(games) {
 
   return(scores)
 }
+
+show_convergence <- function(scores) {
+  n <- nrow(scores)
+  convergence <- data.frame(
+    i = 1:n,
+    stay = cumsum(scores$stay) / 1:n,
+    switch = cumsum(scores$switch) / 1:n
+  ) 
+
+  return(convergence)
+}
+
+plot <- function(convergence) {
+  ggplot(data=convergence) + geom_line(aes(i, switch)) + geom_line(aes(i, stay))
+}
+
+
+go <- function() {
+  games <- run_games(10000)
+  score <- do_score(games)
+  convergence <- show_convergence(score)
+  plot(convergence)
+}
+
 
