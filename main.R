@@ -1,4 +1,5 @@
-
+library(tidyr)
+library(ggplot2)
 
 run_games <- function(n) {
   df <- data.frame(
@@ -44,8 +45,11 @@ show_convergence <- function(scores) {
   return(convergence)
 }
 
-plot <- function(convergence) {
-  ggplot(data=convergence) + geom_line(aes(i, switch)) + geom_line(aes(i, stay))
+plot <- function(conv) {
+  ggplot(data=conv, aes(x=i, y=p_win, color=strategy)) +
+    ggtitle("Monty Hall Problem - stay or switch?") +
+    scale_y_continuous("Win Probability", breaks=c(0, 0.333, 0.667, 1)) +
+    geom_line()
 }
 
 
@@ -53,7 +57,8 @@ go <- function() {
   games <- run_games(10000)
   score <- do_score(games)
   convergence <- show_convergence(score)
-  plot(convergence)
+  conv2 <- gather(convergence, strategy, p_win, stay, switch)
+  plot(conv2)
 }
 
 
